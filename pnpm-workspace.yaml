@@ -1,0 +1,5 @@
+allowBuilds:
+  # Image optimisation — BRIEF §10.3 requires AVIF/WebP via next/image
+  sharp: true
+  # Native resolver used by eslint-config-next
+  unrs-resolver: true

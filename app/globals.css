@@ -1,0 +1,286 @@
+@import "tailwindcss";
+
+/* §9.4 — hover animations are gated so touch devices don't fire false hover
+   states on tap. Tailwind's built-in `hover:` only checks (hover: hover);
+   this adds the (pointer: fine) half the brief asks for. Use `hover-fine:`
+   for anything that moves, and plain `hover:` only for colour changes. */
+@custom-variant hover-fine {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @slot;
+    }
+  }
+}
+
+/* ==========================================================================
+   CYAN GROUP — design tokens
+   Source of truth: docs/BRIEF.md §8.3 (colour, type, layout), §9.1 (motion).
+
+   Three deliberate deviations from the brief, all resolved in favour of the
+   WCAG 2.1 AA floor that §10.4 and CLAUDE.md hard rule 7 make binding:
+
+   1. --cyan-dark (referenced in §10.4, never defined) is treated as a typo
+      for --cyan-deep, which already does that job at 5.05:1 on white.
+      Adding a fourth cyan would also break the §8.3 colour lockdown.
+   2. --alert darkened #EC008C -> #D4007E. The original is 4.25:1 on white,
+      under the 4.5:1 needed for the form-error body text it is specified for.
+      #D4007E is 5.12:1 and passes as text, border and field from one token.
+   3. White on --cyan is 2.53:1 and fails even the 3:1 large-text threshold,
+      so the brief's "fine at 18px+ or bold" does not hold. Primary CTAs are
+      black on cyan (8.3:1). Enforced in the Button cva variants.
+   ========================================================================== */
+
+@theme {
+  /* ---- Colour ------------------------------------------------------------
+     The default Tailwind palette is cleared. §8.3 locks the palette to black,
+     white, cyan, two neutrals and one functional alert colour — so every
+     off-palette utility (text-red-500, bg-purple-600) is removed from the
+     build rather than left available and policed by review. */
+  --color-*: initial;
+
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-inherit: inherit;
+
+  /* Base. Roughly 50% of the site's surface area. */
+  --color-black: #000000;
+
+  /* Process cyan. Field colour: fills, rules, active states, icon fills,
+     outline-type strokes, large display type. Never small text on light. */
+  --color-cyan: #00aeef;
+
+  /* Cyan for small text, links and icons on light backgrounds. 5.05:1 on
+     --paper. Also the field colour when white text must run below 18px. */
+  --color-cyan-deep: #0076a8;
+
+  /* Tinted panels, cards, form fields, table stripes on light sections. */
+  --color-cyan-wash: #e2f4fc;
+
+  --color-ink: #0e1113; /* body text on light */
+  --color-stock: #f4f6f7; /* light section background */
+  --color-paper: #ffffff; /* cards, elevated surfaces */
+
+  /* Functional only — form errors, destructive confirms. Never decorative. */
+  --color-alert: #d4007e;
+
+  /* ---- Type --------------------------------------------------------------
+     Scale is closed: 12/14/16/18/21/28/38/52/72/96 (§8.3). Defaults cleared
+     so a size off the scale cannot be reached. Display sits at line-height
+     1.0 with negative tracking; body at 1.6. */
+  --text-*: initial;
+
+  --text-12: 0.75rem;
+  --text-12--line-height: 1.4;
+  --text-14: 0.875rem;
+  --text-14--line-height: 1.5;
+  --text-16: 1rem;
+  --text-16--line-height: 1.6;
+  --text-18: 1.125rem;
+  --text-18--line-height: 1.6;
+  --text-21: 1.3125rem;
+  --text-21--line-height: 1.6;
+
+  --text-28: 1.75rem;
+  --text-28--line-height: 1.2;
+  --text-28--letter-spacing: -0.01em;
+  --text-38: 2.375rem;
+  --text-38--line-height: 1.1;
+  --text-38--letter-spacing: -0.02em;
+  --text-52: 3.25rem;
+  --text-52--line-height: 1;
+  --text-52--letter-spacing: -0.02em;
+  --text-72: 4.5rem;
+  --text-72--line-height: 1;
+  --text-72--letter-spacing: -0.03em;
+  --text-96: 6rem;
+  --text-96--line-height: 1;
+  --text-96--letter-spacing: -0.03em;
+
+  /* Poppins at four weights maximum (400/500/700/800) — more is wasted bytes.
+     Geist Mono is the one addition: captions, stats, section labels, spec
+     detail. Both self-hosted via next/font in app/layout.tsx. Values are set
+     in the @theme inline block below. */
+  --font-*: initial;
+
+  /* ---- Motion (§9.1) -----------------------------------------------------
+     Never ease-in on UI. Never transition: all. Nothing enters from scale(0). */
+  --ease-*: initial;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1); /* entering, exiting */
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1); /* on-screen movement */
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1); /* mobile nav */
+
+  /* ---- Layout (§8.3) -----------------------------------------------------
+     12-column grid, 1440px max content width, 80px gutters desktop /
+     20px mobile, vertical rhythm 120px desktop / 64px mobile. */
+  --container-content: 90rem; /* 1440px */
+  --spacing-gutter: 1.25rem; /* 20px, mobile */
+  --spacing-gutter-lg: 5rem; /* 80px, desktop */
+  --spacing-rhythm: 4rem; /* 64px, mobile */
+  --spacing-rhythm-lg: 7.5rem; /* 120px, desktop */
+
+  /* Header height, animated 88 -> 64px past 80px of scroll (§9.2). */
+  --spacing-header: 5.5rem; /* 88px */
+  --spacing-header-condensed: 4rem; /* 64px */
+
+  /* Max measure for body copy — 68 characters (§8.3). */
+  --container-measure: 34rem;
+}
+
+/* next/font defines --font-poppins and --font-geist-mono on <body>, not on
+   :root. A plain @theme block emits its variables at :root, where those
+   references do not resolve — so the font utilities silently fell back to the
+   system stack. `inline` substitutes the value into the utility itself, which
+   is then evaluated inside <body> where the variables exist. */
+@theme inline {
+  --font-sans: var(--font-poppins), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+/* --------------------------------------------------------------------------
+   Base
+   No prefers-color-scheme block: this is not a theme-switching site. §8.3
+   specifies explicit black and light sections as a compositional device, and
+   an automatic dark mode would fight it.
+   -------------------------------------------------------------------------- */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-poppins), system-ui, sans-serif;
+    font-size: var(--text-16);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Body copy is always left-aligned over two lines (§8.3, audit item 18). */
+  p {
+    text-align: left;
+  }
+
+  /* Focus ring is 2px --cyan at 2px offset, sitewide, never removed (§10.4).
+     Cyan on black is 8.3:1 and on white 2.5:1, so light surfaces get the
+     deeper tone to stay visible. */
+  :focus-visible {
+    outline: 2px solid var(--color-cyan-deep);
+    outline-offset: 2px;
+  }
+
+  .bg-black :focus-visible,
+  .bg-ink :focus-visible {
+    outline-color: var(--color-cyan);
+  }
+
+  /* §9.4 — reduced motion keeps opacity and colour (they aid comprehension),
+     removes all transform-based movement, and skips the hero outline draw. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  /* Vertical rhythm between major sections — 64px mobile, 120px desktop. */
+  .rhythm {
+    padding-block: var(--spacing-rhythm);
+  }
+
+  @media (width >= 64rem) {
+    .rhythm {
+      padding-block: var(--spacing-rhythm-lg);
+    }
+  }
+
+  /* Content well: 1440px max, 20px gutters mobile, 80px desktop. */
+  .well {
+    margin-inline: auto;
+    max-width: var(--container-content);
+    padding-inline: var(--spacing-gutter);
+  }
+
+  @media (width >= 64rem) {
+    .well {
+      padding-inline: var(--spacing-gutter-lg);
+    }
+  }
+
+  /* §9.2 button motion: hover is a background shift at 160ms/ease, :active is
+     scale(0.97) at 120ms/--ease-out. Two properties, two durations, listed
+     explicitly — `transition: all` is banned. */
+  .btn-motion {
+    transition-property: background-color, border-color, color, transform;
+    transition-duration: 160ms, 160ms, 160ms, 120ms;
+    transition-timing-function: ease, ease, ease, var(--ease-out);
+  }
+
+  /* §9.2 accordion / FAQ: height + opacity on click, 200ms, --ease-out.
+     base-ui publishes the measured height as --accordion-panel-height, which
+     is what makes animating to `auto` possible without a JS measure step. */
+  .accordion-panel {
+    height: var(--accordion-panel-height);
+    overflow: hidden;
+    transition:
+      height 200ms var(--ease-out),
+      opacity 200ms var(--ease-out);
+  }
+
+  .accordion-panel[data-starting-style],
+  .accordion-panel[data-ending-style] {
+    height: 0;
+    opacity: 0;
+  }
+
+  /* §9.2 split cards: lift 4px on hover, 220ms, --ease-out. State indication. */
+  .lift-motion {
+    transition-property: transform, border-color, background-color;
+    transition-duration: 220ms;
+    transition-timing-function: var(--ease-out);
+  }
+
+  /* Client logo strip (§9.2) — continuous marquee, pauses on hover, linear.
+     Ambient proof. Under reduced motion the base-layer rule collapses the
+     duration and the strip simply sits still, which is the correct outcome. */
+  .marquee {
+    animation: marquee 45s linear infinite;
+  }
+
+  .marquee-pause:hover .marquee,
+  .marquee:focus-within {
+    animation-play-state: paused;
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* The solid/outline device (§8.2). The subject is solid, the category is
+     outlined in cyan. paint-order gives a usable fallback where
+     -webkit-text-stroke is unsupported. */
+  .outline-type {
+    color: transparent;
+    -webkit-text-stroke: 2px var(--color-cyan);
+    paint-order: stroke fill;
+  }
+
+  @media (width >= 64rem) {
+    .outline-type {
+      -webkit-text-stroke-width: 3px;
+    }
+  }
+}

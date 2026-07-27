@@ -28,6 +28,9 @@ pnpm lint         # eslint
 pnpm typecheck    # tsc --noEmit
 ```
 
+Pinned to Next.js 15.5.22 per the brief. Next 16 is available and is a
+deliberate not-yet — raise it as a decision rather than upgrading in passing.
+
 Run `pnpm build` and `pnpm typecheck` before saying a task is done.
 
 ## Layout
@@ -57,12 +60,24 @@ Defined as CSS custom properties in `app/globals.css`, surfaced through Tailwind
 --ink:        #0E1113;  /* body text on light */
 --stock:      #F4F6F7;  /* light section background */
 --paper:      #FFFFFF;  /* cards, elevated surfaces */
---alert:      #EC008C;  /* functional only — form errors, destructive confirms */
+--alert:      #D4007E;  /* functional only — form errors, destructive confirms */
 ```
+
+Tokens live in `app/globals.css` under `@theme`. Tailwind's default palette and
+type scale are cleared there (`--color-*: initial`, `--text-*: initial`), so an
+off-palette utility like `text-red-500` or an off-scale `text-sm` does not exist
+in the build. That is deliberate — it enforces the lockdown at build time rather
+than at review time.
 
 **Colour lockdown:** black, white, cyan, two neutrals, one alert colour. That is the entire palette — it is the catalogue's palette. No purple, no red, no pink, no rainbow, no CMYK gradient bars. If a design need seems to require another colour, it doesn't — re-read §8.3.
 
-**Contrast rule:** `--cyan` is a *field* colour. Never use it for small text on light backgrounds — use `--cyan-deep`. White on `--cyan` is fine at 18px+ or bold, not below.
+**Contrast rule:** `--cyan` is a *field* colour. Never use it for small text on light backgrounds — use `--cyan-deep`.
+
+**Text on a cyan field is black, never white.** White on `#00AEEF` measures 2.53:1 — it fails the 4.5:1 body threshold *and* the 3:1 large-text one, so the brief's "fine at 18px+ or bold" does not hold and is superseded here. Black on cyan is 8.3:1. This is encoded in the `Button` cva variants; do not reintroduce a white-on-cyan variant.
+
+Where white text on a cyan field is genuinely wanted, the field must be `--cyan-deep` (5.05:1 with white). §10.4 of the brief calls this `--cyan-dark`, which is never defined anywhere — treat it as a typo for `--cyan-deep`. Do not add a fourth cyan; it breaks the §8.3 lockdown.
+
+`--alert` is darkened from the brief's `#EC008C` (4.25:1 on white — fails as body text, which is what form errors are) to `#D4007E` (5.12:1). One token now works as text, border and field.
 
 ## Typography
 
@@ -117,7 +132,7 @@ Default, hover, active, focus-visible and disabled states. Focus ring is 2px `--
 1. The primary CTA is always **"Book a discovery call"**. Never "Get started", never "Learn more", never "To products".
 2. Never send the primary CTA off-domain to the catalogue. Browsing products is always secondary.
 3. No hardcoded colours, spacing or font sizes — tokens only.
-4. No `localStorage` or `sessionStorage`.
+4. No `localStorage` or `sessionStorage`. This rule stands, so the §8.4 hero outline draw runs **once per page load**, not once per session — "once per session" is not implementable without storage, and the rule wins.
 5. Images always via `next/image` with explicit dimensions.
 6. Real `<label>` elements on every form field. Errors announced via `aria-live`.
 7. WCAG 2.1 AA is a floor, not a target.

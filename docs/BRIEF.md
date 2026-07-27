@@ -680,7 +680,7 @@ That standard is what the following list defends. If a shortcut breaks one of th
 
 ### Build order
 
-1. Scaffold Next.js 15 + TypeScript + Tailwind. Configure the token system from §8.2 in `globals.css` as CSS custom properties, plus easing tokens from §9.1.
+1. Scaffold Next.js 15 + TypeScript + Tailwind. Configure the token system from §8.3 in `globals.css` as CSS custom properties, plus easing tokens from §9.1.
 2. Build the component library first: `Button` (cva variants: primary/secondary/ghost × sm/md/lg), `Card`, `Section`, `Stat`, `LogoStrip`, `Accordion`, `FormField`, `CTABlock`, `Breadcrumb`. Every one with default/hover/active/focus/disabled states.
 3. Layout shell: header with scroll behaviour (§9.2), mobile drawer, footer with full IA links.
 4. Homepage, section by section, in the order of §6.1.
