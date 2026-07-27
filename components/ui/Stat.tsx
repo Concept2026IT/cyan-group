@@ -64,14 +64,29 @@ export function Stat({
 
   return (
     <div ref={ref} className={cn("flex flex-col gap-2", className)}>
+      {/* NumberFlow renders into a custom element whose digits are not exposed
+          as text, so assistive tech got "+ Years" with the figure missing
+          entirely — the one thing the stat exists to communicate (WCAG 1.1.1,
+          4.1.2). The animated version is hidden and the real value is stated
+          once, in full, for screen readers. */}
       <p className="text-52 font-extrabold lg:text-72">
-        {prefix ? <span aria-hidden="true">{prefix}</span> : null}
-        <NumberFlow
-          value={displayValue}
-          transformTiming={{ duration: 800, easing: "cubic-bezier(0.23,1,0.32,1)" }}
-          willChange
-        />
-        {suffix ? <span aria-hidden="true">{suffix}</span> : null}
+        <span className="sr-only">
+          {prefix}
+          {value.toLocaleString("en-GB")}
+          {suffix}
+        </span>
+        <span aria-hidden="true">
+          {prefix ? <span>{prefix}</span> : null}
+          <NumberFlow
+            value={displayValue}
+            transformTiming={{
+              duration: 800,
+              easing: "cubic-bezier(0.23,1,0.32,1)",
+            }}
+            willChange
+          />
+          {suffix ? <span>{suffix}</span> : null}
+        </span>
       </p>
       <p
         className={cn(

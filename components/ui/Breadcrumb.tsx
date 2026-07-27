@@ -43,10 +43,13 @@ export function Breadcrumb({
     <>
       <nav aria-label="Breadcrumb" className={className}>
         <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-12 tracking-widest uppercase">
+          {/* Crumb links measured 34x17, under the 24x24 minimum in WCAG 2.2
+              SC 2.5.8. The vertical padding brings the target up without
+              changing the visual type size or the line rhythm. */}
           {items.map((item, index) => {
             const isLast = index === items.length - 1;
             return (
-              <li key={item.href} className="flex items-center gap-2">
+              <li key={item.href} className="flex items-center gap-2 py-1">
                 {isLast ? (
                   <span
                     aria-current="page"
@@ -59,7 +62,8 @@ export function Breadcrumb({
                     <Link
                       href={item.href}
                       className={cn(
-                        "underline-offset-4 transition-colors duration-200 ease-[var(--ease-out)] hover:underline",
+                        "inline-flex min-h-6 items-center underline-offset-4",
+                        "transition-colors duration-200 ease-[var(--ease-out)] hover:underline",
                         isDark ? "text-cyan" : "text-cyan-deep",
                       )}
                     >

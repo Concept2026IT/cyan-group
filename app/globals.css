@@ -272,15 +272,27 @@
   /* The solid/outline device (§8.2). The subject is solid, the category is
      outlined in cyan. paint-order gives a usable fallback where
      -webkit-text-stroke is unsupported. */
+  /* The fallback matters: `color: transparent` with an unsupported
+     -webkit-text-stroke renders the word invisible rather than merely
+     unstyled, which would silently delete half of every hero headline. So the
+     word stays cyan and solid by default, and only goes transparent where the
+     stroke is actually supported. paint-order then keeps the stroke outside
+     the fill so the letterforms stay crisp. */
   .outline-type {
-    color: transparent;
-    -webkit-text-stroke: 2px var(--color-cyan);
+    color: var(--color-cyan);
     paint-order: stroke fill;
   }
 
-  @media (width >= 64rem) {
+  @supports (-webkit-text-stroke: 2px currentColor) {
     .outline-type {
-      -webkit-text-stroke-width: 3px;
+      color: transparent;
+      -webkit-text-stroke: 2px var(--color-cyan);
+    }
+
+    @media (width >= 64rem) {
+      .outline-type {
+        -webkit-text-stroke-width: 3px;
+      }
     }
   }
 }

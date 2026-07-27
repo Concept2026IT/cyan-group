@@ -73,11 +73,15 @@ function FieldShell({
       {children}
 
       {/* Always rendered so the live region exists before the error does —
-          a region inserted at the same moment as its content is unreliable. */}
+          a region inserted at the same moment as its content is unreliable.
+
+          role="alert" carries an implicit aria-live="assertive", so declaring
+          "polite" alongside it set the two in conflict. A validation error the
+          user needs to correct before submitting should interrupt, so the
+          implicit assertive behaviour of role="alert" is the one kept. */}
       <p
         id={`${id}-error`}
         role="alert"
-        aria-live="polite"
         className={cn("text-14 font-medium text-alert", !error && "sr-only")}
       >
         {error ?? ""}
