@@ -55,13 +55,17 @@ function FieldShell({
         className="font-mono text-12 tracking-widest text-ink uppercase"
       >
         {label}
+        {/* The asterisk is visual only. There is deliberately no sr-only
+            "(required)" beside it: the control carries the `required`
+            attribute, which assistive tech already announces, so the extra
+            text made every mandatory field read "Name (required), required".
+            One signal each, in the place that owns it. */}
         {required ? (
           <span className="text-alert" aria-hidden="true">
             {" "}
             *
           </span>
         ) : null}
-        {required ? <span className="sr-only"> (required)</span> : null}
       </label>
 
       {hint ? (

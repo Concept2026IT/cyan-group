@@ -68,7 +68,15 @@ export function LogoStrip({ children, label, className }: LogoStripProps) {
           }
         >
           <div className="flex shrink-0 items-center gap-16">{children}</div>
-          <div className="flex shrink-0 items-center gap-16" aria-hidden="true">
+          {/* `inert` as well as aria-hidden. The real roster will be links or
+              images, and aria-hidden alone leaves a focusable duplicate in the
+              tab order — a keyboard user would tab into logos a screen reader
+              says aren't there. `inert` removes them from both. */}
+          <div
+            className="flex shrink-0 items-center gap-16"
+            aria-hidden="true"
+            inert
+          >
             {children}
           </div>
         </div>

@@ -129,10 +129,12 @@ export default function Styleguide() {
           <Card
             tone="paper"
             href="/branded-merchandise/"
-            linkLabel="Branded merchandise"
+            labelledBy="card-merch-title"
             className="border border-ink/12"
           >
-            <h3 className="text-28 font-bold uppercase">Branded merchandise</h3>
+            <h3 id="card-merch-title" className="text-28 font-bold uppercase">
+              Branded merchandise
+            </h3>
             <p className="mt-4 text-16 text-ink/80">
               Programmes, stores, onboarding kits, events.
             </p>
@@ -156,7 +158,8 @@ export default function Styleguide() {
       <Section tone="black" label="Stat" rule edgeLight>
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <Stat value={25} suffix="+" label="Years" tone="dark" />
-          <Stat value={15} prefix="Top " suffix="%" label="EcoVadis" tone="dark" />
+          {/* Non-numeric — renders static, nothing to roll */}
+          <Stat value="Top 15%" label="EcoVadis" tone="dark" />
           <Stat value={22} label="Countries shipped" tone="dark" />
           <Stat value={14000} label="Kits fulfilled" tone="dark" />
         </div>

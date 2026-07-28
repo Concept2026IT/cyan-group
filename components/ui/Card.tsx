@@ -38,11 +38,23 @@ export type CardProps = CardVariants & {
   className?: string;
   /**
    * When set the whole card becomes one click target via a stretched overlay
-   * link, so the accessible name stays on the heading rather than being
-   * duplicated across every nested link.
+   * link.
    */
   href?: string;
-  /** Accessible label for the stretched link when `href` is set. */
+  /**
+   * ID of the card's heading. The stretched link takes its accessible name
+   * from that heading via aria-labelledby.
+   *
+   * Prefer this over `linkLabel`. Passing the title as a string duplicates it:
+   * the heading announces it once, then the link announces it again, so the
+   * card reads its own title twice. Referencing the heading names the link
+   * correctly and keeps exactly one copy in the accessible tree.
+   */
+  labelledBy?: string;
+  /**
+   * Fallback accessible name when the card has no heading to point at — a
+   * purely visual card, say. Ignored when `labelledBy` is set.
+   */
   linkLabel?: string;
 };
 
@@ -53,6 +65,7 @@ export function Card({
   className,
   children,
   href,
+  labelledBy,
   linkLabel,
 }: CardProps) {
   const isLinked = href !== undefined;
@@ -67,8 +80,14 @@ export function Card({
     >
       {children}
       {isLinked ? (
-        <Link href={href} className="absolute inset-0 rounded-2xl">
-          <span className="sr-only">{linkLabel ?? "Read more"}</span>
+        <Link
+          href={href}
+          className="absolute inset-0 rounded-2xl"
+          aria-labelledby={labelledBy}
+        >
+          {labelledBy ? null : (
+            <span className="sr-only">{linkLabel ?? "Read more"}</span>
+          )}
         </Link>
       ) : null}
     </div>
