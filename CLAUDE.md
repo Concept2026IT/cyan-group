@@ -28,10 +28,10 @@ pnpm lint         # eslint
 pnpm typecheck    # tsc --noEmit
 ```
 
+Run `pnpm build` and `pnpm typecheck` before saying a task is done.
+
 Pinned to Next.js 15.5.22 per the brief. Next 16 is available and is a
 deliberate not-yet — raise it as a decision rather than upgrading in passing.
-
-Run `pnpm build` and `pnpm typecheck` before saying a task is done.
 
 ## Layout
 
@@ -54,7 +54,7 @@ Defined as CSS custom properties in `app/globals.css`, surfaced through Tailwind
 
 ```css
 --black:      #000000;  /* nav, hero fields, dark sections */
---cyan:       #00AEEF;  /* primary CTAs, rules, active states, icon fills, outline strokes */
+--cyan:       #00AEEF;  /* rules, labels, active states, icon fills, outline strokes */
 --cyan-deep:  #0076A8;  /* small text + links on light backgrounds (AA-safe) */
 --cyan-wash:  #E2F4FC;  /* tinted panels, cards, form fields */
 --ink:        #0E1113;  /* body text on light */
@@ -66,18 +66,13 @@ Defined as CSS custom properties in `app/globals.css`, surfaced through Tailwind
 Tokens live in `app/globals.css` under `@theme`. Tailwind's default palette and
 type scale are cleared there (`--color-*: initial`, `--text-*: initial`), so an
 off-palette utility like `text-red-500` or an off-scale `text-sm` does not exist
-in the build. That is deliberate — it enforces the lockdown at build time rather
-than at review time.
+in the build — the lockdown is enforced at build time, not at review time.
 
 **Colour lockdown:** black, white, cyan, two neutrals, one alert colour. That is the entire palette — it is the catalogue's palette. No purple, no red, no pink, no rainbow, no CMYK gradient bars. If a design need seems to require another colour, it doesn't — re-read §8.3.
 
-**Contrast rule:** `--cyan` is a *field* colour. Never use it for small text on light backgrounds — use `--cyan-deep`.
+**Contrast rule:** `--cyan` is a *field* colour. Never use it for small text on light backgrounds — use `--cyan-deep`. **Text on a cyan field is black, never white** — see the Button hierarchy below. Where white text on a cyan field is genuinely wanted, the field must be `--cyan-deep` (5.05:1 with white); §10.4 of the brief calls that `--cyan-dark`, which is defined nowhere, so treat it as a typo for `--cyan-deep` rather than adding a fourth cyan.
 
-**Text on a cyan field is black, never white.** White on `#00AEEF` measures 2.53:1 — it fails the 4.5:1 body threshold *and* the 3:1 large-text one, so the brief's "fine at 18px+ or bold" does not hold and is superseded here. Black on cyan is 8.3:1. This is encoded in the `Button` cva variants; do not reintroduce a white-on-cyan variant.
-
-Where white text on a cyan field is genuinely wanted, the field must be `--cyan-deep` (5.05:1 with white). §10.4 of the brief calls this `--cyan-dark`, which is never defined anywhere — treat it as a typo for `--cyan-deep`. Do not add a fourth cyan; it breaks the §8.3 lockdown.
-
-`--alert` is darkened from the brief's `#EC008C` (4.25:1 on white — fails as body text, which is what form errors are) to `#D4007E` (5.12:1). One token now works as text, border and field.
+Deviations from the brief's literal values, and the measurements behind them, are recorded in [docs/BUILD-DECISIONS.md](docs/BUILD-DECISIONS.md). Read it before changing a token.
 
 ## Typography
 
@@ -91,6 +86,28 @@ Where white text on a cyan field is genuinely wanted, the field must be `--cyan-
 ### The solid/outline device
 
 Cyan's signature type treatment: in a headline, the **subject** is solid and the **category** is outlined. `BRANDED` solid, *MERCH &* outlined. Outline uses `-webkit-text-stroke` in `--cyan` with a `paint-order: stroke fill` fallback. This is a brand rule, not decoration — apply it consistently.
+
+## Button hierarchy
+
+**Cyan fill is scarce: one per page, maximum.** It is reserved for the single highest-value action on that page — always the discovery call.
+
+| Variant | Style | Use |
+|---|---|---|
+| `primary` | Cyan fill, **black text** (8.3:1) | The discovery call. Once per page |
+| `secondary` | Black fill, white text | Every other real action |
+| `ghost` | Transparent, cyan border and label | Tertiary — "browse the catalogue", filters, in-page nav |
+
+There is **no white-on-cyan variant** — it measures 2.53:1 and fails AA outright.
+
+If cyan fill appears twice on one screen, the hierarchy has collapsed. Cyan gets its presence from outline headings and selective-cyan photography, not from button fills.
+
+## Images
+
+- Static brand assets only in `/public` (logo SVGs, favicons, OG fallbacks). **Never commit the image library.**
+- Everything else lives in Sanity's asset CDN with on-the-fly transforms
+- Always `next/image`, explicit dimensions, AVIF/WebP, responsive `sizes`
+- Alt text is a required field in Sanity — never ship an image without it
+- Selective-cyan treatment is applied by hand to a curated set, never automated. Product photography stays full colour.
 
 ## Motion
 

@@ -60,12 +60,15 @@ export function CTABlock({
         </p>
       ) : null}
 
+      {/* The discovery call is the page's one cyan fill — except on a cyan
+          field, where a cyan button would disappear into its own background
+          and the black fill carries the action instead. */}
       <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
         <Button
           href="/book-a-call/"
           size="lg"
           variant={isCyan ? "secondary" : "primary"}
-          surface={isCyan ? "light" : "dark"}
+          surface={isCyan ? "cyan" : isDark ? "dark" : "light"}
         >
           Book a discovery call
         </Button>
@@ -75,7 +78,7 @@ export function CTABlock({
             href={secondary.href}
             size="lg"
             variant="ghost"
-            surface={isDark ? "dark" : "light"}
+            surface={isCyan ? "cyan" : isDark ? "dark" : "light"}
           >
             {secondary.label}
           </Button>

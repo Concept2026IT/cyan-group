@@ -68,8 +68,10 @@ export default function Styleguide() {
       {/* ---- Buttons ---- */}
       <Section tone="stock" label="Button" rule>
         <p className="mb-10 max-w-(--container-measure) text-16 text-ink/80">
-          Primary is black on cyan at 8.3:1. There is no white-on-cyan variant —
-          it measures 2.53:1 and fails AA outright.
+          Cyan fill is scarce: one per page, reserved for the discovery call.
+          Primary is black on cyan at 8.3:1 — there is no white-on-cyan variant,
+          it measures 2.53:1 and fails AA outright. This page is a reference and
+          so breaks the one-fill rule deliberately.
         </p>
 
         <div className="flex flex-wrap items-center gap-4">
@@ -80,12 +82,14 @@ export default function Styleguide() {
 
         <div className="mt-8 flex flex-wrap items-center gap-4">
           <Button variant="secondary" surface="light">
-            Browse the catalogue
+            Request a quote
           </Button>
           <Button variant="ghost" surface="light">
-            Get the capability pack
+            Browse the catalogue
           </Button>
-          <Button disabled>Disabled</Button>
+          <Button variant="secondary" surface="light" disabled>
+            Disabled
+          </Button>
         </div>
 
         <div className="mt-10 rounded-2xl bg-black p-8">
@@ -95,10 +99,25 @@ export default function Styleguide() {
           <div className="flex flex-wrap items-center gap-4">
             <Button>Book a discovery call</Button>
             <Button variant="secondary" surface="dark">
-              Browse the catalogue
+              Request a quote
             </Button>
             <Button variant="ghost" surface="dark">
-              Get the capability pack
+              Browse the catalogue
+            </Button>
+          </div>
+        </div>
+
+        <div className="mt-6 rounded-2xl bg-cyan p-8">
+          <p className="mb-6 font-mono text-12 tracking-widest text-black uppercase">
+            On a cyan field — quiet variants go black, since cyan-deep on cyan
+            is 2.0:1 and fails 1.4.11
+          </p>
+          <div className="flex flex-wrap items-center gap-4">
+            <Button variant="secondary" surface="cyan">
+              Book a discovery call
+            </Button>
+            <Button variant="ghost" surface="cyan">
+              Browse the catalogue
             </Button>
           </div>
         </div>

@@ -443,7 +443,8 @@ Three moves:
 
 - **Selective-cyan photography is the signature.** Every contextual image is black-and-white with exactly one element restored to cyan. One element, never two. This is the catalogue treatment applied sitewide, and it's the highest-leverage colour decision available. Product and merchandise photography stays full colour — clients need to see the actual goods.
 - **Outline type gets a cyan stroke, not a white one.** `BRANDED` stays white solid; *MERCH &* becomes a cyan outline. Costs nothing, puts cyan into the biggest element on the page.
-- **Every primary CTA is a cyan fill.** Currently they're outlined with a thin cyan edge. Fill them. One learnable action colour, sitewide.
+- **Cyan fill is scarce and therefore loud: one per page, maximum.** Reserved for the single highest-value action on that page — always the discovery call. Every other button is black fill with white text, or a cyan-outlined ghost. If cyan fill appears twice on a screen it stops meaning "this is the thing to do" and starts meaning "this site is blue."
+- **Cyan's presence comes from type and photography, not from buttons.** The outline headings are the largest cyan elements on any page. That's where the colour lives at scale. Buttons don't need to carry it too — and when they try, the hierarchy collapses because everything is shouting at once.
 - **All rules, dividers, list markers and section labels are cyan.**
 - **Dark sections get a cyan edge-light** — a soft glow along one edge or behind the type, so black sections don't read flat.
 - **Section boundaries are colour changes, not devices.** Black to stock to black. The transition *is* the boundary — it costs nothing, it lets the black do the dramatic work, and it needs no ornament. Minor boundaries get a 1px cyan rule with a mono label in the margin. That's the whole system.
@@ -579,6 +580,30 @@ So the decision isn't about whether Google can read it any more. It's about four
 
 If speed genuinely matters more than the redirect precision, going Lovable-only is defensible — but put Cloudflare in front for redirect rules, and budget time for the SEO configuration Lovable still won't do for you: keyword strategy, internal linking discipline, and the content itself.
 
+### 10.1b Image pipeline
+
+Roughly 600 images exist in the current WordPress library. Most of them will not survive, and that's correct.
+
+**Never commit the library to the repo.** Only true static brand assets — logo SVGs, favicons, OG fallbacks — live in `/public`. Everything else goes to Sanity's asset CDN, which gives on-the-fly transforms, responsive derivatives and hotspot cropping without a build step.
+
+**Cull before you migrate.** A WordPress library of 600 is typically 100–180 real images plus generated size variants (`-150x150`, `-300x200`), duplicates and legacy junk. Script the audit: strip size variants, dedupe by file hash, drop anything under 800px on the long edge, and report what's left grouped by dimension and format.
+
+**Then sort what survives into four buckets:**
+
+| Bucket | Treatment | Notes |
+|---|---|---|
+| Product / merchandise | Full colour, untouched | The largest bucket. Clients need to see the actual goods |
+| Contextual / lifestyle / production | **Selective cyan** | Curate 20–30 hero-grade images only. Hand-treated, not automated — selective colour needs a human deciding what to isolate. This is a design task, not a build task |
+| Team | Black and white | Consistent with the existing treatment |
+| Logos, icons, UI furniture | Replace | Client logos as SVG; UI icons from `lucide-react`. Don't migrate raster versions of either |
+
+**Two cautions worth raising before anything goes live:**
+
+- **Quality.** Images downloaded *from* the site have already been compressed and resized by WordPress. Where originals exist — photographer files, catalogue InDesign links, supplier feeds — use those instead. You cannot recover detail that's already been thrown away.
+- **Rights.** Some of the library will be supplier catalogue imagery, stock, or client-owned. Before a rebuilt site publishes them, confirm the licence position on anything featuring identifiable people, client branding, or third-party products.
+
+**Alt text is a required field in Sanity**, not an optional one. It's an accessibility requirement and an SEO one, and it is the single thing that always gets skipped on a migration of this size.
+
 ### 10.2 CMS content models
 
 `Service`, `Pillar`, `Sector`, `CaseStudy`, `Insight`, `TeamMember`, `Credential`, `Testimonial`, `FAQ`, `SiteSettings`.
@@ -680,7 +705,7 @@ That standard is what the following list defends. If a shortcut breaks one of th
 
 ### Build order
 
-1. Scaffold Next.js 15 + TypeScript + Tailwind. Configure the token system from §8.3 in `globals.css` as CSS custom properties, plus easing tokens from §9.1.
+1. Scaffold Next.js 15 + TypeScript + Tailwind. Configure the token system from §8.2 in `globals.css` as CSS custom properties, plus easing tokens from §9.1.
 2. Build the component library first: `Button` (cva variants: primary/secondary/ghost × sm/md/lg), `Card`, `Section`, `Stat`, `LogoStrip`, `Accordion`, `FormField`, `CTABlock`, `Breadcrumb`. Every one with default/hover/active/focus/disabled states.
 3. Layout shell: header with scroll behaviour (§9.2), mobile drawer, footer with full IA links.
 4. Homepage, section by section, in the order of §6.1.
