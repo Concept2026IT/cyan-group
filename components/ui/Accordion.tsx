@@ -23,7 +23,11 @@ export type AccordionProps = {
   className?: string;
 };
 
-export function Accordion({ items, tone = "light", className }: AccordionProps) {
+export function Accordion({
+  items,
+  tone = "light",
+  className,
+}: AccordionProps) {
   const isDark = tone === "dark";
 
   return (

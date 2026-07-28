@@ -1,0 +1,10 @@
+.next
+node_modules
+pnpm-lock.yaml
+out
+build
+
+# Mirrors of the client's documents — kept byte-identical so a refresh is a
+# straight copy with nothing to merge. See docs/BUILD-DECISIONS.md.
+docs/BRIEF.md
+CLAUDE.md

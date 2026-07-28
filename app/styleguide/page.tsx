@@ -4,7 +4,11 @@ import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { CTABlock } from "@/components/ui/CTABlock";
-import { FormField, SelectField, TextAreaField } from "@/components/ui/FormField";
+import {
+  FormField,
+  SelectField,
+  TextAreaField,
+} from "@/components/ui/FormField";
 import { LogoStrip } from "@/components/ui/LogoStrip";
 import { Section } from "@/components/ui/Section";
 import { Stat } from "@/components/ui/Stat";
@@ -187,7 +191,12 @@ export default function Styleguide() {
       {/* ---- Form fields ---- */}
       <Section tone="stock" label="FormField" rule>
         <div className="grid max-w-3xl gap-8 md:grid-cols-2">
-          <FormField id="sg-name" label="Name" required placeholder="Jane Okafor" />
+          <FormField
+            id="sg-name"
+            label="Name"
+            required
+            placeholder="Jane Okafor"
+          />
           <FormField
             id="sg-email"
             label="Work email"
@@ -207,7 +216,13 @@ export default function Styleguide() {
               { value: "50k-plus", label: "£50,000+" },
             ]}
           />
-          <FormField id="sg-disabled" label="Disabled" disabled value="" readOnly />
+          <FormField
+            id="sg-disabled"
+            label="Disabled"
+            disabled
+            value=""
+            readOnly
+          />
           <TextAreaField
             id="sg-detail"
             label="What do you need?"

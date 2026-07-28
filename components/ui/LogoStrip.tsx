@@ -60,7 +60,10 @@ export function LogoStrip({ children, label, className }: LogoStripProps) {
             animation-play-state to running and wins on source order, so a
             class-based pause silently did nothing. */}
         <div
-          className={cn("flex w-max items-center gap-16", isAnimated && "marquee")}
+          className={cn(
+            "flex w-max items-center gap-16",
+            isAnimated && "marquee",
+          )}
           style={
             isAnimated
               ? { animationPlayState: paused ? "paused" : "running" }

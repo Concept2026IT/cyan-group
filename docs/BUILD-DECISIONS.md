@@ -17,7 +17,7 @@ nothing to merge.
 
 The brief originally said white on `--cyan` was "fine at 18px+ or bold". It
 isn't. `#00AEEF` has a relative luminance of 0.365, so white on it measures
-**2.53:1** — below the 4.5:1 body threshold *and* below the 3:1 large-text one.
+**2.53:1** — below the 4.5:1 body threshold _and_ below the 3:1 large-text one.
 Black on cyan is **8.30:1**.
 
 Adopted into the July 2026 revision, which now states the rule and the 2.53:1
@@ -102,8 +102,8 @@ available. Deliberate not-yet — raise as a decision, don't upgrade in passing.
 
 Not corrected in the file, so it stays a clean mirror of the client's copy.
 
-| Location | Issue |
-|---|---|
-| §14, build order step 1 | Cites "§8.2" for the token system; tokens are in **§8.3** |
-| §10.4 | Uses `--cyan-dark`, which is defined nowhere. Treat as `--cyan-deep` |
-| §8.3 | Calls Poppins "available as a variable font". On Google Fonts it ships as static cuts, so four weights means four files — it counts against the §10.3 budget |
+| Location                | Issue                                                                                                                                                        |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| §14, build order step 1 | Cites "§8.2" for the token system; tokens are in **§8.3**                                                                                                    |
+| §10.4                   | Uses `--cyan-dark`, which is defined nowhere. Treat as `--cyan-deep`                                                                                         |
+| §8.3                    | Calls Poppins "available as a variable font". On Google Fonts it ships as static cuts, so four weights means four files — it counts against the §10.3 budget |
