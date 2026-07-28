@@ -33,6 +33,13 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# WordPress media export and its audit output.
+# BRIEF §10.1b: never commit the image library — survivors go to Sanity's
+# asset CDN, and only true static brand assets (logo SVGs, favicons, OG
+# fallbacks) ever live in /public.
+/assets-raw/
+/assets-raw-audit.csv
+
 # vercel
 .vercel
 
